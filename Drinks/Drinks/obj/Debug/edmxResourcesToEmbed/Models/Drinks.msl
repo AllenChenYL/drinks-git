@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DrinksModelStoreContainer" CdmEntityContainer="DrinksEntities">
+    <EntitySetMapping Name="Order">
+      <EntityTypeMapping TypeName="DrinksModel.Order">
+        <MappingFragment StoreEntitySet="Order">
+          <ScalarProperty Name="EndDate" ColumnName="END_DATE" />
+          <ScalarProperty Name="CreateDate" ColumnName="CREATE_DATE" />
+          <ScalarProperty Name="Note" ColumnName="NOTE" />
+          <ScalarProperty Name="DefaultImageId" ColumnName="DEFAULT_IMAGE_ID" />
+          <ScalarProperty Name="StoreAddress" ColumnName="STORE_ADDRESS" />
+          <ScalarProperty Name="StorePhone" ColumnName="STORE_PHONE" />
+          <ScalarProperty Name="StoreName" ColumnName="STORE_NAME" />
+          <ScalarProperty Name="CreateId" ColumnName="CREATE_ID" />
+          <ScalarProperty Name="Id" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderDetail">
+      <EntityTypeMapping TypeName="DrinksModel.OrderDetail">
+        <MappingFragment StoreEntitySet="OrderDetail">
+          <ScalarProperty Name="Memo" ColumnName="MEMO" />
+          <ScalarProperty Name="Quantity" ColumnName="QUANTITY" />
+          <ScalarProperty Name="IceLevel" ColumnName="ICE_LEVEL" />
+          <ScalarProperty Name="SugarLevel" ColumnName="SUGAR_LEVEL" />
+          <ScalarProperty Name="Size" ColumnName="SIZE" />
+          <ScalarProperty Name="Name" ColumnName="NAME" />
+          <ScalarProperty Name="CreateId" ColumnName="CREATE_ID" />
+          <ScalarProperty Name="OrderId" ColumnName="ORDER_ID" />
+          <ScalarProperty Name="Id" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Store">
+      <EntityTypeMapping TypeName="DrinksModel.Store">
+        <MappingFragment StoreEntitySet="Store">
+          <ScalarProperty Name="Note" ColumnName="NOTE" />
+          <ScalarProperty Name="DefaultImageId" ColumnName="DEFAULT_IMAGE_ID" />
+          <ScalarProperty Name="Address" ColumnName="ADDRESS" />
+          <ScalarProperty Name="Phone" ColumnName="PHONE" />
+          <ScalarProperty Name="Name" ColumnName="NAME" />
+          <ScalarProperty Name="Id" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

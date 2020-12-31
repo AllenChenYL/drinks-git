@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/store.js"></script>
+<style>
+    .row{
+        margin-bottom:30px;
+    }
+    .row > label {
+        font-size:24px;
+        padding-right: 10px;
+    }
+    img {
+        cursor: pointer;
+        font-size: 25px;
+        max-width: 100%; 
+        max-height: auto;
+    }
+
+    #dialogoverlay{
+	    display:none;
+	    background-color:#ffffff;
+	    opacity:0.7;
+	    width:100%;
+	    top:0px;
+	    left:0px;
+	    position:fixed;
+	    z-index:10;
+    }
+    button{padding:4px 7px;}hr{color:red;}	
+    #dialogbox{
+	    display:none;
+	    position:fixed;
+	    background:#000000;
+	    width:560px;
+	    z-index:10;
+	    border-radius:7px;
+    }
+    #dialogbox div{background:#ffffff; margin:8px;}
+    #dialogbox #dialogboxhead{ background: #666; font-size:19px; padding:10px; color:#CCC; }
+    #dialogbox #dialogboxbody{ background:#333; padding:20px; color:#FFF; }
+    #dialogbox #dialogboxfoot{ background: #666; padding:10px; text-align:right; }
+
+    #box{position:absolute; left:360px; top:180px;}
+    #prompt_value1 {
+        max-width: none;
+        width:100% !important;
+    }
+</style>
+
+<div data-bind="visible: editShow">
+    <h2>新增店家</h2>
+    <hr />
+    <div class="row">
+        <div class="col-sm-8">
+            <img data-bind="click: imgClick, attr: { src: model.DefaultImageId}" alt="點擊新增圖片來源☜" />
+        </div>
+        <div class="col-sm-4">
+            <div class="row"><label>店名:</label><input type="text" name="Name" data-bind="value: model.Name" maxlength="50" /></div>
+            <div class="row"><label>電話:</label><input type="text" name="Phone" data-bind="value: model.Phone" maxlength="20" /></div>
+            <div class="row"><label>地址:</label><input type="text" name="Address" data-bind="value: model.Address" maxlength="100" /></div>
+            <div class="row"><label>備註:</label><input type="text" name="Note" data-bind="value: model.Note" maxlength="100" /></div>
+            <div class="row">
+                <input type="button" name="OK" class="btn btn-success" data-bind="click: saveClick" value="確認" />
+                <input type="button" name="Back" class="btn btn-secondary" data-bind="click: backClick" value="回到列表" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-kendo-template" id="gridEditTemplate">
+    <div style="max-width:20px; display:-webkit-box;">
+        <div>
+            <img src="https://cdn.pixabay.com/photo/2012/04/12/20/12/x-30465_640.png" data-bind="click: deleteClick" alt="" />
+        </div>
+        &nbsp;&nbsp;
+        <div>
+            <img src="https://image.shutterstock.com/image-vector/edit-vector-icon-260nw-546038194.jpg" data-bind="click: editClick" alt="" />
+        </div>
+    </div>
+</script>
+
+<div data-bind="visible: searchShow">
+    <h2>店家資訊</h2>
+    <input type="button" name="Add" class="btn btn-link" data-bind="click: addClick" value="新增店家" />
+    <hr />
+    <div data-role="grid"
+         data-bind="source: storeDataSource"
+         data-columns="[
+                        { field: '', title: ' ', template: kendo.template($('#gridEditTemplate').html()), width:'70px'},
+                        { field: 'Name', title: '店名' , width:'200px'},
+                        { field: 'Phone', title: '電話', width:'150px'},
+                        { field: 'Address', title: '地址' },
+                        { field: 'Note', title: '備註' }
+                        ]"></div> 
+</div>
+
+<div id="dialogoverlay"></div>
+
+<div id="dialogbox">
+    <div id="dialogboxhead"></div>
+    <div id="dialogboxbody"></div>
+    <div id="dialogboxfoot"></div>
+</div>
