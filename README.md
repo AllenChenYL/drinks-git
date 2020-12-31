@@ -91,6 +91,22 @@ __第三方套件__: Nuget AutoMapper
 1. 讓kendo grid 能夠使用tab加速使用者輸入資料的速度
     1. 在order.js內官方提供由上而下的輸入方式，已改成由左而右方式，  
     grid.table.on('keydown', function (e)找到這一行開始 (目前為261行)。
+1. 發現每次瀏覽器Load頁面有夠慢。
+    1. BroswerLink導致Load變慢，Web.config加入<add key="vs:EnableBrowserLink" value="false" />關起來。
+1. 因為檔案太大關係，所以省略整個專案將Packages及bin檔上傳至github，  
+但出現**Nuget基礎連結已關閉問題**，導致無法下載Packages套件。
+    1. 工具->Nuget封裝管理員->套件管理員設定->套件來源->nuget.org  
+    將https://www.nuget.org/api/v2/ 內改成http://www.nuget.org/api/v2/
+    1. 如果上面失敗，可以自己上nuget官方抓取相關文件版本，console安裝(套件太多麻煩)
+    1. 複製下方Code到txt檔案內，存成.reg檔，點擊兩下登陸成功後，重開VS進入Nuget。  
+    __(因為動到系統檔不建議使用，會怕的話再自行找方法)__
+```
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v4.0.30319]
+"SchUseStrongCrypto"=dword:00000001
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.0.30319]
+"SchUseStrongCrypto"=dword:00000001
+```
 
 ## 可改進部分
 
