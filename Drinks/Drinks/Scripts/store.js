@@ -43,7 +43,7 @@ var viewModel = kendo.observable({
                 data: kendo.stringify(e.data)
             }).done(function (response) {
                 if (!response.errors) {
-                    alert('刪除成功');
+                    alert(String.format('{0}刪除成功', response.Name));
                     viewModel.backClick();
                 }
                 else {

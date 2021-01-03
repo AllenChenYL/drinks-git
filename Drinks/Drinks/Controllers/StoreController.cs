@@ -14,6 +14,12 @@ namespace Drinks.Controllers
     [LoginAuthorizeFilter]
     public class StoreController : BaseController
     {
+        private Service.Implement.StoreService storeService;
+        public StoreController() 
+        {
+            storeService = new Service.Implement.StoreService();
+        }
+
         // GET: Store
         public ActionResult Index()
         {
@@ -21,67 +27,38 @@ namespace Drinks.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(StoreVM model) 
+        public JsonResult Create(StoreVM storeVM) 
         {
-            Mapper.CreateMap<StoreVM, Store>();
-            var result = Mapper.Map<Store>(model);
-
-            using(Models.DrinksEntities db = new DrinksEntities())
-            {
-                db.Store.Add(result);
-                db.SaveChanges();
-            }
+            var store = Mapper.Map<Store>(storeVM);
+            var result = storeService.CreateStore(store);
 
             return Json(result);
         }
 
         public JsonResult List() 
         {
-            using (Models.DrinksEntities db = new DrinksEntities())
-            {
-                var model = (from s in db.Store select s).ToList();
-                Mapper.CreateMap<Store, StoreVM>();
-                var result = Mapper.Map<List<StoreVM>>(model);
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
+            var stores = storeService.GetStores();
+            var result = Mapper.Map<List<StoreVM>>(stores);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Update(StoreVM model)
+        public JsonResult Update(StoreVM storeVM)
         {
-            using (Models.DrinksEntities db = new DrinksEntities())
-            {
-                var dbModel = (from s in db.Store where s.Id == model.Id select s).FirstOrDefault();
+            var store = Mapper.Map<Store>(storeVM);
+            var result = storeService.UpdateStore(store);
 
-                if (dbModel != null)
-                {
-                    Mapper.CreateMap<StoreVM, Store>();
-                    var result = Mapper.Map<Store>(model);
-                    dbModel.Name = result.Name;
-                    dbModel.Phone = result.Phone;
-                    dbModel.Address = result.Address;
-                    dbModel.Note = result.Note;
-                    dbModel.DefaultImageId = result.DefaultImageId;
-                    db.SaveChanges();
-                }
-                return Json(new { });
-            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Delete(StoreVM model)
+        public JsonResult Delete(StoreVM storeVM)
         {
-            using (Models.DrinksEntities db = new DrinksEntities())
-            {
-                var result = (from s in db.Store where s.Id == model.Id select s).FirstOrDefault();
-                
-                if(result != null)
-                {
-                    db.Store.Remove(result);
-                    db.SaveChanges();
-                }
-                return Json(new { });
-            }
+            var store = Mapper.Map<Store>(storeVM);
+            var result = storeService.DeleteStore(store);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
     }
