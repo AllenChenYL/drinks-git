@@ -17,158 +17,88 @@ namespace Drinks.Controllers
     [LoginAuthorizeFilter]
     public class OrderController : BaseController
     {
+        private Service.Implement.StoreService storeService;
+        private Service.Implement.OrderService orderService;
+        private Service.Implement.UserService userService;
+        public OrderController() 
+        {
+            storeService = new Service.Implement.StoreService();
+            orderService = new Service.Implement.OrderService();
+            userService = new Service.Implement.UserService();
+        }
         // GET: Order
         public ActionResult Index()
         {
-            using (Models.DrinksEntities db = new Models.DrinksEntities())
-            {
-                var dbModel = (from s in db.Store select s).ToList();
-                
-                var result = Mapper.Map<List<StoreVM>>(dbModel);
-                return View(result);
-            }
+            var stores = storeService.GetStores();
+            var result = Mapper.Map<List<StoreVM>>(stores);
+            return View(result);
         }
 
         [HttpPost]
-        public JsonResult Create(OrderVM model) 
+        public JsonResult Create(OrderVM orderVM, int storeId) 
         {
-            using (Models.DrinksEntities db = new DrinksEntities()) 
-            {
-                var dbStore = (from s in db.Store where s.Id == model.StoreId select s).FirstOrDefault();
-                if (dbStore != null)
-                {
-                    var userId = HttpContext.User.Identity.GetUserId();
-                    var order = new Order()
-                    {
-                        CreateDate = DateTime.Now,
-                        StoreName = dbStore.Name,
-                        StorePhone = dbStore.Phone,
-                        StoreAddress = dbStore.Address,
-                        DefaultImageId = dbStore.DefaultImageId,
-                        EndDate = model.EndDate,
-                        CreateId = userId,
-                        Note = model.Note
-                    };
-                    db.Order.Add(order);
-                    db.SaveChanges();
-                }
-            }
-            return Json(new { });
+            var order = Mapper.Map<Order>(orderVM);
+            var result = orderService.Create(order, storeId);
+
+            return Json(result);
         }
 
         [HttpPost]
         public JsonResult Delete(int id) 
         {
-            using (DrinksEntities db = new DrinksEntities())
-            {
-                var dbModel = (from s in db.Order
-                               where s.Id == id 
-                               select s).FirstOrDefault();
-                
-                if (dbModel != null) {
-                    if (dbModel.OrderDetail.Count > 0) {
-                        db.OrderDetail.RemoveRange(db.OrderDetail);
-                        db.SaveChanges();
-                    }
-                    db.Order.Remove(dbModel);
-                    db.SaveChanges();
-                }
-            }
-            return Json(new { });
+            var result = orderService.Delete(id);
+
+            return Json(result);
         }
 
         [HttpPost]
         public JsonResult Cancel(int id) 
         {
-            var userId = HttpContext.User.Identity.GetUserId();
-            using (DrinksEntities db = new DrinksEntities())
-            {
-                var dbModel = (from s in db.OrderDetail
-                               where s.OrderId == id && s.CreateId == userId 
-                               select s).ToList();
-                
-                if (dbModel != null)
-                {
-                    db.OrderDetail.RemoveRange(dbModel);
-                    db.SaveChanges();
-                }
-            }
+            orderService.DeleteDetails(id);
             return Json(new { });
         }
 
         public JsonResult List() 
         {
-            using(DrinksEntities db = new DrinksEntities())
-            {
-                DateTime overOneDay = DateTime.Now.AddDays(-1); //撈超過一天以前的飲料團
-                var model = (from s in db.Order
-                             where overOneDay < s.EndDate
-                             select s).ToList().OrderBy(s => s.EndDate);
-
-                var result = SetGridViewModel(Mapper.Map<List<OrderVM>>(model));
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
+            var orders = orderService.GetOrders();
+            var result = SetGridViewModel(Mapper.Map<List<OrderVM>>(orders));
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         private List<OrderVM> SetGridViewModel(List<OrderVM> viewmodel) 
         {
-            var userId = HttpContext.User.Identity.GetUserId();
-            using(UserEntities db = new UserEntities())
-            {
-                var users = (from s in db.AspNetUsers 
-                             select new{s.Id, s.UserName}).ToDictionary(s => s.Id, s => s.UserName);
+            var users = userService.GetUsers()
+                        .Select(u => new { u.Id, u.UserName })
+                        .ToDictionary(u => u.Id, u => u.UserName);
+            string userId = userService.GetUserId(System.Web.HttpContext.Current.User.Identity.Name);
 
-                foreach (var o in viewmodel) {
-                    o.Creater = users.ContainsKey(o.CreateId) ? users[o.CreateId] : string.Empty;
-                    o.HasDetail = o.OrderDetail.Where(od => od.CreateId == userId).Count() > 0;
-                    foreach (var od in o.OrderDetail) {
-                        od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
-                    }
+            foreach (var o in viewmodel)
+            {
+                o.Creater = users.ContainsKey(o.CreateId) ? users[o.CreateId] : string.Empty;
+                o.HasDetail = o.OrderDetail.Where(od => od.CreateId == userId).Count() > 0;
+                foreach (var od in o.OrderDetail)
+                {
+                    od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
                 }
             }
+            
             return viewmodel;
         }
 
-        public JsonResult GetDetailByUser(int id)
+        public JsonResult GetOrderByUserId(int id)
         {
-            var userId = HttpContext.User.Identity.GetUserId();
-            using (DrinksEntities db = new DrinksEntities())
-            {
-                var model = (from s in db.Order
-                             where s.Id == id
-                             select s).FirstOrDefault();
-                model.OrderDetail = model.OrderDetail.Where(od => od.CreateId == userId).ToList();
-
-                var result = Mapper.Map<OrderVM>(model);
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
+            var order = orderService.GetOrderById(id);
+            var result = Mapper.Map<OrderVM>(order);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Save(OrderVM viewmodel)
-        {
-            var model = Mapper.Map<Order>(viewmodel);
-            var userId = HttpContext.User.Identity.GetUserId();
+        public JsonResult Save(OrderVM orderVM)
+        {    
+            var order = Mapper.Map<Order>(orderVM);
+            var result = orderService.Save(order);
 
-            foreach(var od in model.OrderDetail) {
-                od.CreateId = userId;
-            }
-
-            using (DrinksEntities db = new DrinksEntities())
-            {
-                var dbModel = (from s in db.OrderDetail
-                               where s.OrderId == model.Id && s.CreateId == userId
-                               select s).ToList();
-                
-                if (dbModel.Count > 0)
-                {
-                    db.OrderDetail.RemoveRange(dbModel);
-                    db.SaveChanges();
-                }
-                db.OrderDetail.AddRange(model.OrderDetail);
-                db.SaveChanges();
-            }
-            return Json(new { });
+            return Json(result);
         }
 
         [HttpPost]

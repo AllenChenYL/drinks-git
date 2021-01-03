@@ -49,7 +49,7 @@ namespace Drinks.Controllers
             var store = Mapper.Map<Store>(storeVM);
             var result = storeService.UpdateStore(store);
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(result);
         }
 
         [HttpPost]
@@ -58,7 +58,7 @@ namespace Drinks.Controllers
             var store = Mapper.Map<Store>(storeVM);
             var result = storeService.DeleteStore(store);
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(result);
         }
 
     }

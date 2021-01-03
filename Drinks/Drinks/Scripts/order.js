@@ -53,13 +53,12 @@ var viewModel = kendo.observable({
     },
     saveClick: function () {
         if (isValid()) {
-            debugger;
             $.ajax({
                 url: "/Order/Create",
                 contentType: "application/json; charset=utf-8",
                 type: "POST",
                 dataType: "json",
-                data: JSON.stringify({ "model": { "storeId": viewModel.storeId, "endDate": viewModel.endDate, "note": viewModel.note } })
+                data: JSON.stringify({ "orderVM": { "endDate": viewModel.endDate, "note": viewModel.note }, "storeId": viewModel.storeId })
             }).done(function (response) {
                 if (!response.errors) {
                     alert('儲存成功');
@@ -110,7 +109,7 @@ var viewModel = kendo.observable({
     followClick: function (e) {
         setVisiblePage(false, false, false, true, false);
         $.ajax({
-            url: "/Order/GetDetailByUser?id=" + e.data.Id,
+            url: "/Order/GetOrderByUserId?id=" + e.data.Id,
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         }).done(function (response) {

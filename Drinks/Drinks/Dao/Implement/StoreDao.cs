@@ -41,7 +41,7 @@ namespace Drinks.Dao.Implement
             }
         }
 
-        private Store Get(int id) 
+        public Store Get(int id) 
         {
             return (from s in db.Store
                     where s.Id == id
