@@ -71,13 +71,10 @@
 </div>
 
 <script type="text/x-kendo-template" id="gridEditTemplate">
-    <div style="max-width:20px; display:-webkit-box;">
+    <div style="display:-webkit-box;">
         <div>
-            <img src="https://cdn.pixabay.com/photo/2012/04/12/20/12/x-30465_640.png" data-bind="click: deleteClick" alt="" />
-        </div>
-        &nbsp;&nbsp;
-        <div>
-            <img src="https://image.shutterstock.com/image-vector/edit-vector-icon-260nw-546038194.jpg" data-bind="click: editClick" alt="" />
+            <div class="btn btn-danger" data-bind="click: deleteClick">刪除</div>
+            <div class="btn btn-success" data-bind="click: editClick">編輯</div>
         </div>
     </div>
 </script>
@@ -89,8 +86,8 @@
     <div data-role="grid"
          data-bind="source: storeDataSource"
          data-columns="[
-                        { field: '', title: ' ', template: kendo.template($('#gridEditTemplate').html()), width:'70px'},
-                        { field: 'Name', title: '店名' , width:'200px'},
+                        { field: '', title: ' ', template: kendo.template($('#gridEditTemplate').html()), width:'140px'},
+                        { field: 'Name', title: '店名' , width:'170px'},
                         { field: 'Phone', title: '電話', width:'150px'},
                         { field: 'Address', title: '地址' },
                         { field: 'Note', title: '備註' }
