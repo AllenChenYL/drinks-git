@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Drinks.ViewModels.StoreVM>
+﻿@model IEnumerable<Drinks.ViewModels.StoresVM>
 
 @{
     ViewBag.Title = "Index";
@@ -150,6 +150,7 @@
                         { field: 'Size', title: '容量' },
                         { field: 'SugarLevel', title: '甜度' },
                         { field: 'IceLevel', title: '冰量' },
+                        { field: 'Price', title: '價格' },
                         { field: 'Quantity', title: '數量' },
                         { field: 'Memo', title: '備註' }
                         ]"></div>
@@ -166,7 +167,8 @@
                     { field: 'Size', title: '容量', width: '60px' },
                     { field: 'SugarLevel', title: '甜度', width: '60px' },
                     { field: 'IceLevel', title: '冰量', width: '60px' },
+                    { field: 'Price', title: '價格', width: '60px' },
                     { field: 'Quantity', title: '數量', width: '60px' },
                     { field: 'Memo', title: '備註' }]"></div>
-    <div data-bind="text: storeInfo" style="background-color: aliceblue; float:right; font-size: 22px"></div>
+    <div data-bind="text: detailInfo" style="background-color: aliceblue; float:right; font-size: 22px"></div>
 </div>

@@ -5,6 +5,7 @@
     Size: "",
     SugarLevel: "",
     IceLevel: "",
+    Price: 0,
     Quantity: 0,
     Memo: ""
 }
@@ -35,7 +36,7 @@ var viewModel = kendo.observable({
     endDate: null,
     storeId: null,
     note: '',
-    storeInfo: '',
+    detailInfo: '',
     showMenu: false,
     storeVisible: false,
     storeAddVisible: false,
@@ -81,8 +82,9 @@ var viewModel = kendo.observable({
     },
     viewClick: function (e)
     {
-        this.viewDataSource.data(e.data.OrderDetail);
-        this.set('storeInfo', String.format('店家名稱: {0}　電話: {1}　住址: {2}', e.data.StoreName, e.data.StorePhone, e.data.StoreAddress));
+        this.viewDataSource.data(e.data.OrderDetails);
+        this.set('detailInfo', String.format('店家名稱: {0}　電話: {1}　住址: {2}　總額:{3}元'
+            , e.data.StoreName, e.data.StorePhone, e.data.StoreAddress, calTotal(e.data.OrderDetails)));
         setVisiblePage(false, false, false, false, true);
     },
     deleteClick: function(e)
@@ -114,7 +116,8 @@ var viewModel = kendo.observable({
             dataType: "json"
         }).done(function (response) {
             if (!response.errors) {
-                viewModel.detailDataSource.data(response.OrderDetail);
+                viewModel.detailDataSource.data(response.OrderDetails);
+                viewModel.newRowClick();
                 viewModel.set('model', e.data);
             }
             else {
@@ -133,6 +136,7 @@ var viewModel = kendo.observable({
             Size: "",
             SugarLevel: "",
             IceLevel: "",
+            Price: 0,
             Quantity: 0,
             Memo: ""
         }
@@ -185,7 +189,7 @@ var viewModel = kendo.observable({
     },
     saveDetailClick: function () {
         if(isValidDetail()){
-            viewModel.set('model.OrderDetail', []);
+            viewModel.set('model.OrderDetails', []);
             $.each(viewModel.detailDataSource.data(), function (index, item) {
                 detail.OrderId = viewModel.model.Id;
                 detail.CreateId = item.CreateId;
@@ -193,9 +197,10 @@ var viewModel = kendo.observable({
                 detail.Size = item.Size;
                 detail.SugarLevel = item.SugarLevel;
                 detail.IceLevel = item.IceLevel;
+                detail.Price = item.Price;
                 detail.Quantity = item.Quantity;
                 detail.Memo = item.Memo;
-                viewModel.model.OrderDetail.push(detail);
+                viewModel.model.OrderDetails.push(detail);
             });
             $.ajax({
                 url: "/Order/Save",
@@ -234,6 +239,7 @@ var viewModel = kendo.observable({
                     Size: { type: "string" },
                     SugarLevel: { type: "string" },
                     IceLevel: { type: "string" },
+                    Price: { type: "number" },
                     Quantity: { type: "number" },
                     Memo: { type: "string" },
                 }
@@ -317,6 +323,7 @@ function isValidDetail() {
         str += isRequired(row.Size) ? '' : '容量、';
         str += isRequired(row.SugarLevel) ? '' : '甜度、';
         str += isRequired(row.IceLevel) ? '' : '冰量、';
+        str += row.Price > 0 ? '' : '價格、';
         str += row.Quantity > 0 ? '' : '數量、';
 
         if (str.length > 0) {
@@ -329,4 +336,18 @@ function isValidDetail() {
         return false;
     }
     return true;
+}
+
+var calTotal = function (details)
+{
+    var total = 0;
+    $.each(details, function (index, item) {
+        if (item.Price && item.Quantity) {
+            total += (item.Price * item.Quantity);
+        }
+        else {
+            total += 0;
+        }
+    });
+    return total;
 }
