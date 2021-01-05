@@ -13,28 +13,28 @@ namespace Drinks.App_Start
         public static void Configure()
         {
             Mapper.Initialize(cfg =>{
-                     cfg.AddProfile<OrderProfile>();
-                     cfg.AddProfile<StoreProfile>();
+                     cfg.AddProfile<OrdersProfile>();
+                     cfg.AddProfile<StoresProfile>();
                 });
         }
     }
 
-    public class OrderProfile : Profile
+    public class OrdersProfile : Profile
     {
         protected override void Configure() 
         {
-            Mapper.CreateMap<Order, OrderVM>();
-            Mapper.CreateMap<OrderVM, Order>();
-            Mapper.CreateMap<OrderDetail, OrderDetailExportVM>();
+            Mapper.CreateMap<Orders, OrdersVM>();
+            Mapper.CreateMap<OrdersVM, Orders>();
+            Mapper.CreateMap<OrderDetails, OrderDetailsExportVM>();
         }
     }
 
-    public class StoreProfile : Profile 
+    public class StoresProfile : Profile 
     {
         protected override void Configure()
         {
-            Mapper.CreateMap<Store, StoreVM>();
-            Mapper.CreateMap<StoreVM, Store>();
+            Mapper.CreateMap<Stores, StoresVM>();
+            Mapper.CreateMap<StoresVM, Stores>();
         }
     }
 }

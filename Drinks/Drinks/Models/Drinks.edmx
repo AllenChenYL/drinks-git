@@ -5,7 +5,22 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DrinksModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Order">
+        <EntityType Name="OrderDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ORDER_ID" Type="int" Nullable="false" />
+          <Property Name="CREATE_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SIZE" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="SUGAR_LEVEL" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="ICE_LEVEL" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="QUANTITY" Type="int" Nullable="false" />
+          <Property Name="MEMO" Type="nvarchar" MaxLength="100" />
+          <Property Name="PRICE" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Orders">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -19,21 +34,7 @@
           <Property Name="CREATE_DATE" Type="datetime" Nullable="false" />
           <Property Name="END_DATE" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="OrderDetail">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ORDER_ID" Type="int" Nullable="false" />
-          <Property Name="CREATE_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="SIZE" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="SUGAR_LEVEL" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="ICE_LEVEL" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="QUANTITY" Type="int" Nullable="false" />
-          <Property Name="MEMO" Type="nvarchar" MaxLength="100" />
-        </EntityType>
-        <EntityType Name="Store">
+        <EntityType Name="Stores">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -45,24 +46,24 @@
           <Property Name="NOTE" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <Association Name="FK_OrderOrderDetail">
-          <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="OrderDetail" Type="Self.OrderDetail" Multiplicity="*" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Order">
+            <Principal Role="Orders">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="OrderDetail">
+            <Dependent Role="OrderDetails">
               <PropertyRef Name="ORDER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DrinksModelStoreContainer">
-          <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrderDetail" EntityType="Self.OrderDetail" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Stores" EntityType="Self.Stores" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_OrderOrderDetail" Association="Self.FK_OrderOrderDetail">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="OrderDetail" EntitySet="OrderDetail" />
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -70,30 +71,15 @@
     <edmx:ConceptualModels>
       <Schema Namespace="DrinksModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DrinksEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Order" EntityType="DrinksModel.Order" />
-          <EntitySet Name="OrderDetail" EntityType="DrinksModel.OrderDetail" />
-          <AssociationSet Name="FK_OrderOrderDetail" Association="DrinksModel.FK_OrderOrderDetail">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="OrderDetail" EntitySet="OrderDetail" />
+          <EntitySet Name="OrderDetails" EntityType="DrinksModel.OrderDetails" />
+          <EntitySet Name="Orders" EntityType="DrinksModel.Orders" />
+          <EntitySet Name="Stores" EntityType="DrinksModel.Stores" />
+          <AssociationSet Name="FK_OrderOrderDetail1" Association="DrinksModel.FK_OrderOrderDetail1">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
           </AssociationSet>
-          <EntitySet Name="Store" EntityType="DrinksModel.Store" />
         </EntityContainer>
-        <EntityType Name="Order">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CreateId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="StoreName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StorePhone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="StoreAddress" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="DefaultImageId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="OrderDetail" Relationship="DrinksModel.FK_OrderOrderDetail" FromRole="Order" ToRole="OrderDetail" />
-        </EntityType>
-        <EntityType Name="OrderDetail">
+        <EntityType Name="OrderDetails">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -106,21 +92,25 @@
           <Property Name="IceLevel" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Memo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Order" Relationship="DrinksModel.FK_OrderOrderDetail" FromRole="OrderDetail" ToRole="Order" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="DrinksModel.FK_OrderOrderDetail1" FromRole="OrderDetails" ToRole="Orders" />
         </EntityType>
-        <Association Name="FK_OrderOrderDetail">
-          <End Type="DrinksModel.Order" Role="Order" Multiplicity="1" />
-          <End Type="DrinksModel.OrderDetail" Role="OrderDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Order">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OrderDetail">
-              <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Store">
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreateId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="StoreName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StorePhone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StoreAddress" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultImageId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="OrderDetails" Relationship="DrinksModel.FK_OrderOrderDetail1" FromRole="Orders" ToRole="OrderDetails" />
+        </EntityType>
+        <EntityType Name="Stores">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -131,30 +121,28 @@
           <Property Name="DefaultImageId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="FK_OrderOrderDetail1">
+          <End Type="DrinksModel.Orders" Role="Orders" Multiplicity="1" />
+          <End Type="DrinksModel.OrderDetails" Role="OrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DrinksModelStoreContainer" CdmEntityContainer="DrinksEntities">
-          <EntitySetMapping Name="Order">
-            <EntityTypeMapping TypeName="DrinksModel.Order">
-              <MappingFragment StoreEntitySet="Order">
-                <ScalarProperty Name="EndDate" ColumnName="END_DATE" />
-                <ScalarProperty Name="CreateDate" ColumnName="CREATE_DATE" />
-                <ScalarProperty Name="Note" ColumnName="NOTE" />
-                <ScalarProperty Name="DefaultImageId" ColumnName="DEFAULT_IMAGE_ID" />
-                <ScalarProperty Name="StoreAddress" ColumnName="STORE_ADDRESS" />
-                <ScalarProperty Name="StorePhone" ColumnName="STORE_PHONE" />
-                <ScalarProperty Name="StoreName" ColumnName="STORE_NAME" />
-                <ScalarProperty Name="CreateId" ColumnName="CREATE_ID" />
-                <ScalarProperty Name="Id" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OrderDetail">
-            <EntityTypeMapping TypeName="DrinksModel.OrderDetail">
-              <MappingFragment StoreEntitySet="OrderDetail">
+          <EntitySetMapping Name="OrderDetails">
+            <EntityTypeMapping TypeName="DrinksModel.OrderDetails">
+              <MappingFragment StoreEntitySet="OrderDetails">
+                <ScalarProperty Name="Price" ColumnName="PRICE" />
                 <ScalarProperty Name="Memo" ColumnName="MEMO" />
                 <ScalarProperty Name="Quantity" ColumnName="QUANTITY" />
                 <ScalarProperty Name="IceLevel" ColumnName="ICE_LEVEL" />
@@ -167,9 +155,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Store">
-            <EntityTypeMapping TypeName="DrinksModel.Store">
-              <MappingFragment StoreEntitySet="Store">
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="DrinksModel.Orders">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="EndDate" ColumnName="END_DATE" />
+                <ScalarProperty Name="CreateDate" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="Note" ColumnName="NOTE" />
+                <ScalarProperty Name="DefaultImageId" ColumnName="DEFAULT_IMAGE_ID" />
+                <ScalarProperty Name="StoreAddress" ColumnName="STORE_ADDRESS" />
+                <ScalarProperty Name="StorePhone" ColumnName="STORE_PHONE" />
+                <ScalarProperty Name="StoreName" ColumnName="STORE_NAME" />
+                <ScalarProperty Name="CreateId" ColumnName="CREATE_ID" />
+                <ScalarProperty Name="Id" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stores">
+            <EntityTypeMapping TypeName="DrinksModel.Stores">
+              <MappingFragment StoreEntitySet="Stores">
                 <ScalarProperty Name="Note" ColumnName="NOTE" />
                 <ScalarProperty Name="DefaultImageId" ColumnName="DEFAULT_IMAGE_ID" />
                 <ScalarProperty Name="Address" ColumnName="ADDRESS" />

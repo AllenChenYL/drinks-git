@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Drinks.ViewModels
 {
-    public class OrderVM : Order
+    public class OrdersVM : Orders
     {
         public string Creater { get; set; }
         public bool IsOverTime { get{

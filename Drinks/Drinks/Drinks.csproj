@@ -203,13 +203,13 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Order.cs">
+    <Compile Include="Models\OrderDetails.cs">
       <DependentUpon>Drinks.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\OrderDetail.cs">
+    <Compile Include="Models\Orders.cs">
       <DependentUpon>Drinks.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Store.cs">
+    <Compile Include="Models\Stores.cs">
       <DependentUpon>Drinks.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.Context.cs">
@@ -232,10 +232,10 @@
     <Compile Include="Service\Implement\StoreService.cs" />
     <Compile Include="Service\Implement\UserService.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewModels\OrderDetailExportVM.cs" />
-    <Compile Include="ViewModels\OrderDetailVM.cs" />
-    <Compile Include="ViewModels\OrderVM.cs" />
-    <Compile Include="ViewModels\StoreVM.cs" />
+    <Compile Include="ViewModels\OrderDetailsExportVM.cs" />
+    <Compile Include="ViewModels\OrderDetailsVM.cs" />
+    <Compile Include="ViewModels\OrdersVM.cs" />
+    <Compile Include="ViewModels\StoresVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

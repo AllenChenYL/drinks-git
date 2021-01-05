@@ -6,8 +6,7 @@ using System.Web;
 
 namespace Drinks.ViewModels
 {
-    public class StoreVM : Store
+    public class OrderDetailsVM : OrderDetails
     {
-
     }
 }

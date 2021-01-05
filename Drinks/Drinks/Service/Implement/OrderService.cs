@@ -19,14 +19,14 @@ namespace Drinks.Service.Implement
             userName = System.Web.HttpContext.Current.User.Identity.Name;
         }
 
-        public Order Create(Order order, int storeId)
+        public Orders Create(Orders order, int storeId)
         {
             string userId = userDao.GetUserId(userName);
             
             var store = storeDao.Get(storeId);
             if (store != null)
             {
-                var newOrder = new Order()
+                var newOrder = new Orders()
                 {
                     CreateDate = DateTime.Now,
                     StoreName = store.Name,
@@ -43,15 +43,15 @@ namespace Drinks.Service.Implement
             return order;
         }
 
-        public Order Delete(int id) 
+        public Orders Delete(int id) 
         {
             var order = orderDao.Get(id);
 
             if (order != null)
             {
-                if (order.OrderDetail.Count > 0)
+                if (order.OrderDetails.Count > 0)
                 {
-                    DeleteDetails(order.OrderDetail.ToList());
+                    DeleteDetails(order.OrderDetails.ToList());
                 }
                 orderDao.Delete(order);
             }
@@ -59,7 +59,7 @@ namespace Drinks.Service.Implement
             return order;
         }
 
-        private void DeleteDetails(List<OrderDetail> orderDetail) 
+        private void DeleteDetails(List<OrderDetails> orderDetail) 
         {
             orderDao.DeleteDetails(orderDetail);
         }
@@ -69,11 +69,11 @@ namespace Drinks.Service.Implement
             string userId = userDao.GetUserId(userName);
 
             var order = orderDao.Get(id);
-            var orderDetails = order.OrderDetail.Where(od => od.CreateId == userId).Select(od => od).ToList();
+            var orderDetails = order.OrderDetails.Where(od => od.CreateId == userId).Select(od => od).ToList();
             orderDao.DeleteDetails(orderDetails);
         }
 
-        public List<Order> GetOrders() 
+        public List<Orders> GetOrders() 
         {
             DateTime overOneDay = DateTime.Now.AddDays(-1); //撈超過一天以前的飲料團
             return orderDao.Get()
@@ -82,23 +82,23 @@ namespace Drinks.Service.Implement
                            .ToList();
         }
 
-        public Order GetOrderById(int id)
+        public Orders GetOrderById(int id)
         {
             string userId = userDao.GetUserId(userName);
             var order = GetOrders().Where(o => o.Id == id).Select(o => o).FirstOrDefault();
-            order.OrderDetail = order.OrderDetail.Where(od => od.CreateId == userId).Select(od => od).ToList();
+            order.OrderDetails = order.OrderDetails.Where(od => od.CreateId == userId).Select(od => od).ToList();
             return order;
         }
 
-        public Order Save(Order order) 
+        public Orders Save(Orders order) 
         {
             string userId = userDao.GetUserId(userName);
-            foreach (var od in order.OrderDetail)
+            foreach (var od in order.OrderDetails)
             {
                 od.CreateId = userId;
             }
 
-            var dbOrderDetail = orderDao.Get(order.Id).OrderDetail
+            var dbOrderDetail = orderDao.Get(order.Id).OrderDetails
                                                       .Where(od => od.CreateId == userId)
                                                       .Select(od => od)
                                                       .ToList();
@@ -106,7 +106,7 @@ namespace Drinks.Service.Implement
             {
                 orderDao.DeleteDetails(dbOrderDetail);
             }
-            orderDao.CreateDetails(order.OrderDetail.ToList());
+            orderDao.CreateDetails(order.OrderDetails.ToList());
 
             return order;
         }

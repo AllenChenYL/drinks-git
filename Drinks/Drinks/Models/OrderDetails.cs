@@ -12,7 +12,7 @@ namespace Drinks.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class OrderDetail
+    public partial class OrderDetails
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
@@ -23,7 +23,8 @@ namespace Drinks.Models
         public string IceLevel { get; set; }
         public int Quantity { get; set; }
         public string Memo { get; set; }
+        public int Price { get; set; }
     
-        public virtual Order Order { get; set; }
+        public virtual Orders Orders { get; set; }
     }
 }

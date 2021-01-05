@@ -14,21 +14,21 @@ namespace Drinks.Dao.Implement
             db = new DrinksEntities();
         }
 
-        public void Create(Store store) 
+        public void Create(Stores store) 
         {
-            db.Store.Add(store);
+            db.Stores.Add(store);
             db.SaveChanges();
         }
 
-        public List<Store> Get() 
+        public List<Stores> Get() 
         {
-            List<Store> result = (from s in db.Store select s).ToList();
+            List<Stores> result = (from s in db.Stores select s).ToList();
             return result;
         }
 
-        public void Update(Store store) 
+        public void Update(Stores store) 
         {
-            var dbModel = (from s in db.Store where s.Id == store.Id select s).FirstOrDefault();
+            var dbModel = (from s in db.Stores where s.Id == store.Id select s).FirstOrDefault();
 
             if (dbModel != null)
             {
@@ -41,19 +41,19 @@ namespace Drinks.Dao.Implement
             }
         }
 
-        public Store Get(int id) 
+        public Stores Get(int id) 
         {
-            return (from s in db.Store
+            return (from s in db.Stores
                     where s.Id == id
                     select s).FirstOrDefault();
         }
 
-        public void Delete(Store store) 
+        public void Delete(Stores store) 
         {
             var dbModel = Get(store.Id);
             if (dbModel != null)
             {
-                db.Store.Remove(dbModel);
+                db.Stores.Remove(dbModel);
                 db.SaveChanges();
             }
         }

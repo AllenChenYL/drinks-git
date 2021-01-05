@@ -14,38 +14,38 @@ namespace Drinks.Dao.Implement
             db = new Models.DrinksEntities();
         }
 
-        public void Create(Order order) 
+        public void Create(Orders order) 
         {
-            db.Order.Add(order);
+            db.Orders.Add(order);
             db.SaveChanges();
         }
 
-        public void CreateDetails(List<OrderDetail> orderDetail)
+        public void CreateDetails(List<OrderDetails> orderDetail)
         {
-            db.OrderDetail.AddRange(orderDetail);
+            db.OrderDetails.AddRange(orderDetail);
             db.SaveChanges();
         }
 
-        public void Delete(Order order) 
+        public void Delete(Orders order) 
         {
-            db.Order.Remove(order);
+            db.Orders.Remove(order);
             db.SaveChanges();
         }
 
-        public void DeleteDetails(List<OrderDetail> orderDetail) 
+        public void DeleteDetails(List<OrderDetails> orderDetail) 
         {
-            db.OrderDetail.RemoveRange(orderDetail);
+            db.OrderDetails.RemoveRange(orderDetail);
             db.SaveChanges();
         }
 
-        public Order Get(int id) 
+        public Orders Get(int id) 
         {
             return Get().Where(o => o.Id == id).Select(o => o).FirstOrDefault();
         }
 
-        public List<Order> Get() 
+        public List<Orders> Get() 
         {
-            return (from s in db.Order select s).ToList();
+            return (from s in db.Orders select s).ToList();
         }
 
     }

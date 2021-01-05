@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Drinks.Models
 {
-    public partial class OrderDetail
+    public partial class OrderDetails
     {
         public string Orderer { get; set; }
     }

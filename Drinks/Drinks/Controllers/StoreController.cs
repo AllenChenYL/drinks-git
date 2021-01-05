@@ -27,9 +27,9 @@ namespace Drinks.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(StoreVM storeVM) 
+        public JsonResult Create(StoresVM storeVM) 
         {
-            var store = Mapper.Map<Store>(storeVM);
+            var store = Mapper.Map<Stores>(storeVM);
             var result = storeService.CreateStore(store);
 
             return Json(result);
@@ -38,24 +38,24 @@ namespace Drinks.Controllers
         public JsonResult List() 
         {
             var stores = storeService.GetStores();
-            var result = Mapper.Map<List<StoreVM>>(stores);
+            var result = Mapper.Map<List<StoresVM>>(stores);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Update(StoreVM storeVM)
+        public JsonResult Update(StoresVM storeVM)
         {
-            var store = Mapper.Map<Store>(storeVM);
+            var store = Mapper.Map<Stores>(storeVM);
             var result = storeService.UpdateStore(store);
 
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult Delete(StoreVM storeVM)
+        public JsonResult Delete(StoresVM storeVM)
         {
-            var store = Mapper.Map<Store>(storeVM);
+            var store = Mapper.Map<Stores>(storeVM);
             var result = storeService.DeleteStore(store);
 
             return Json(result);

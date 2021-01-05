@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Drinks.ViewModels
 {
-    public class OrderDetailExportVM
+    public class OrderDetailsExportVM
     {
         [Display(Name = "訂購人")]
         public string Orderer { get; set; }

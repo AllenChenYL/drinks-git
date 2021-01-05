@@ -25,8 +25,8 @@ namespace Drinks.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Order> Order { get; set; }
-        public virtual DbSet<OrderDetail> OrderDetail { get; set; }
-        public virtual DbSet<Store> Store { get; set; }
+        public virtual DbSet<OrderDetails> OrderDetails { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Stores> Stores { get; set; }
     }
 }

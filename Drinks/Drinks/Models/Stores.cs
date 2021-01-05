@@ -12,7 +12,7 @@ namespace Drinks.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Store
+    public partial class Stores
     {
         public int Id { get; set; }
         public string Name { get; set; }

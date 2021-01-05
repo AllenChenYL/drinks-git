@@ -30,14 +30,14 @@ namespace Drinks.Controllers
         public ActionResult Index()
         {
             var stores = storeService.GetStores();
-            var result = Mapper.Map<List<StoreVM>>(stores);
+            var result = Mapper.Map<List<StoresVM>>(stores);
             return View(result);
         }
 
         [HttpPost]
-        public JsonResult Create(OrderVM orderVM, int storeId) 
+        public JsonResult Create(OrdersVM orderVM, int storeId) 
         {
-            var order = Mapper.Map<Order>(orderVM);
+            var order = Mapper.Map<Orders>(orderVM);
             var result = orderService.Create(order, storeId);
 
             return Json(result);
@@ -61,11 +61,11 @@ namespace Drinks.Controllers
         public JsonResult List() 
         {
             var orders = orderService.GetOrders();
-            var result = SetGridViewModel(Mapper.Map<List<OrderVM>>(orders));
+            var result = SetGridViewModel(Mapper.Map<List<OrdersVM>>(orders));
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        private List<OrderVM> SetGridViewModel(List<OrderVM> viewmodel) 
+        private List<OrdersVM> SetGridViewModel(List<OrdersVM> viewmodel) 
         {
             var users = userService.GetUsers()
                         .Select(u => new { u.Id, u.UserName })
@@ -75,8 +75,8 @@ namespace Drinks.Controllers
             foreach (var o in viewmodel)
             {
                 o.Creater = users.ContainsKey(o.CreateId) ? users[o.CreateId] : string.Empty;
-                o.HasDetail = o.OrderDetail.Where(od => od.CreateId == userId).Count() > 0;
-                foreach (var od in o.OrderDetail)
+                o.HasDetail = o.OrderDetails.Where(od => od.CreateId == userId).Count() > 0;
+                foreach (var od in o.OrderDetails)
                 {
                     od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
                 }
@@ -88,14 +88,14 @@ namespace Drinks.Controllers
         public JsonResult GetOrderByUserId(int id)
         {
             var order = orderService.GetOrderById(id);
-            var result = Mapper.Map<OrderVM>(order);
+            var result = Mapper.Map<OrdersVM>(order);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Save(OrderVM orderVM)
+        public JsonResult Save(OrdersVM orderVM)
         {    
-            var order = Mapper.Map<Order>(orderVM);
+            var order = Mapper.Map<Orders>(orderVM);
             var result = orderService.Save(order);
 
             return Json(result);
@@ -105,7 +105,7 @@ namespace Drinks.Controllers
         public JsonResult ExportToCsv(int id, string filepath =  @"D:\Drinks.csv") 
         {
             using(DrinksEntities db = new DrinksEntities()) {
-                var dbModel = (from s in db.Order
+                var dbModel = (from s in db.Orders
                                where s.Id == id
                                select s).FirstOrDefault();
                 
@@ -115,15 +115,15 @@ namespace Drinks.Controllers
                     var users = (from s in dbUser.AspNetUsers
                                  select new { s.Id, s.UserName }).ToDictionary(s => s.Id, s => s.UserName);
 
-                    foreach (var od in dbModel.OrderDetail)
+                    foreach (var od in dbModel.OrderDetails)
                     {
                         od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
                     }
                 }
 
-                var result = Mapper.Map<List<OrderDetailExportVM>>(dbModel.OrderDetail);
+                var result = Mapper.Map<List<OrderDetailsExportVM>>(dbModel.OrderDetails);
                 if (dbModel != null) {
-                    CSVGenerator<OrderDetailExportVM>(true, filepath, result);
+                    CSVGenerator<OrderDetailsExportVM>(true, filepath, result);
                 }
             }
             return Json(new { });
