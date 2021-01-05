@@ -37,6 +37,7 @@ var viewModel = kendo.observable({
     storeId: null,
     note: '',
     detailInfo: '',
+    recordByOrderer: '',
     showMenu: false,
     storeVisible: false,
     storeAddVisible: false,
@@ -82,6 +83,7 @@ var viewModel = kendo.observable({
     },
     viewClick: function (e)
     {
+        this.set('recordByOrderer', '');
         this.viewDataSource.data(e.data.OrderDetails);
         this.set('detailInfo', String.format('店家名稱: {0}　電話: {1}　住址: {2}　總額:{3}元'
             , e.data.StoreName, e.data.StorePhone, e.data.StoreAddress, calTotal(e.data.OrderDetails)));
@@ -186,6 +188,10 @@ var viewModel = kendo.observable({
         } else {
             alert('該飲料團無資料，請[返回團購列表]，[跟團]後再進行匯出');
         }
+    },
+    payClick: function (e) {
+        e.target.innerText = '已付款';
+        alert('付款完成(無使用資料庫作記錄)');
     },
     saveDetailClick: function () {
         if(isValidDetail()){

@@ -156,13 +156,23 @@
                         ]"></div>
 </div>
 
+<script type="text/x-kendo-template" id="gridOrdererTemplate">
+    <div>
+        #if(viewModel.recordByOrderer != Orderer) {#
+            #= Orderer #
+        <div class="btn btn-link" data-bind="click: payClick">總共:#= TotalByOrderer#元</div>
+        #}#
+        #viewModel.recordByOrderer = Orderer#
+    </div>
+</script>
+
 <div data-bind="visible: groupViewVisible">
     <div class="btn btn-link" data-bind="click: backGroupClick">返回團購列表</div>
     <div class="btn btn-link" data-bind="click: exportClick">匯出csv檔</div>
     <div data-role="grid"
          data-bind="source: viewDataSource"
          data-columns="[
-                    { field: 'Orderer', title:'訂購人', width: '150px' },
+                    { field: 'Orderer', title:'訂購人', template: kendo.template($('#gridOrdererTemplate').html()), width: '180px' },
                     { field: 'Name', title: '飲料名稱', width: '150px' },
                     { field: 'Size', title: '容量', width: '60px' },
                     { field: 'SugarLevel', title: '甜度', width: '60px' },
