@@ -11,6 +11,8 @@ using Drinks.Filters;
 using Drinks.App_Code;
 using System.IO;
 using System.Reflection;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace Drinks.Controllers
 {
@@ -101,50 +103,74 @@ namespace Drinks.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult ExportToCsv(int id, string filepath =  @"D:\Drinks.csv") 
+        public void ExportToExcel(int id) 
         {
-            using(DrinksEntities db = new DrinksEntities()) {
-                var dbModel = (from s in db.Orders
-                               where s.Id == id
-                               select s).FirstOrDefault();
-                
+            var order = orderService.GetOrderById(id);
+            var users = userService.GetUsers().ToDictionary(s => s.Id, s => s.UserName);
 
-                using (UserEntities dbUser = new UserEntities())
-                {
-                    var users = (from s in dbUser.AspNetUsers
-                                 select new { s.Id, s.UserName }).ToDictionary(s => s.Id, s => s.UserName);
-
-                    foreach (var od in dbModel.OrderDetails)
-                    {
-                        od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
-                    }
-                }
-
-                var result = Mapper.Map<List<OrderDetailsExportVM>>(dbModel.OrderDetails);
-                if (dbModel != null) {
-                    CSVGenerator<OrderDetailsExportVM>(true, filepath, result);
-                }
-            }
-            return Json(new { });
-        }
-
-        void CSVGenerator<T>(bool genColumn, string FilePath, List<T> data)
-        {
-            using (var file = new StreamWriter(FilePath))
+            foreach (var od in order.OrderDetails)
             {
-                Type t = typeof(T);
-                PropertyInfo[] propInfos = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                //是否要輸出屬性名稱
-                if (genColumn)
-                {
-                    file.WriteLineAsync(string.Join(",", propInfos.Select(i => i.CustomAttributes.First().NamedArguments.First().TypedValue.Value)));
-                }
-                foreach (var item in data)
-                {
-                    file.WriteLineAsync(string.Join(",", propInfos.Select(i => i.GetValue(item))));
-                }
+                od.Orderer = users.ContainsKey(od.CreateId) ? users[od.CreateId] : string.Empty;
             }
+
+            var result = Mapper.Map<List<OrderDetailsExportVM>>(order.OrderDetails);
+            var fileBytes = ConvertToExcel(result);
+
+            Response.Expires = 0;
+            Response.ExpiresAbsolute = DateTime.UtcNow.AddYears(-1);
+            Response.Clear(); 
+            Response.ClearHeaders(); 
+            Response.Buffer = false;
+            Response.ContentType = "application/octet-stream";
+            Response.AddHeader("content-disposition", "attachment;" + String.Format("filename={0:yyyyMMdd_HH時mm分}", DateTime.Now) + ".xlsx");
+            try
+            {
+                Response.BinaryWrite(fileBytes);
+            }
+            catch
+            {
+                throw new FileNotFoundException("file not found");
+            }
+            Response.End();
         }
+
+        private byte[] ConvertToExcel(List<OrderDetailsExportVM> od) 
+        {
+            XSSFWorkbook xssfworkbook = new XSSFWorkbook(); 
+            ISheet sheet = xssfworkbook.CreateSheet("sheet");
+
+            sheet.CreateRow(0).CreateCell(0).SetCellValue("訂購人");
+            sheet.GetRow(0).CreateCell(1).SetCellValue("飲料名稱");
+            sheet.GetRow(0).CreateCell(2).SetCellValue("容量");
+            sheet.GetRow(0).CreateCell(3).SetCellValue("甜度");
+            sheet.GetRow(0).CreateCell(4).SetCellValue("冰量");
+            sheet.GetRow(0).CreateCell(5).SetCellValue("價格");
+            sheet.GetRow(0).CreateCell(6).SetCellValue("數量");
+            sheet.GetRow(0).CreateCell(7).SetCellValue("備註");
+
+            int rowIndex = 1;
+            string orderer = string.Empty;
+            for (int row = 0; row < od.Count(); row++)
+            {
+                sheet.CreateRow(rowIndex).CreateCell(0).SetCellValue(orderer == od[row].Orderer ? string.Empty : od[row].Orderer);
+                sheet.GetRow(rowIndex).CreateCell(1).SetCellValue(od[row].Name);
+                sheet.GetRow(rowIndex).CreateCell(2).SetCellValue(od[row].Size);
+                sheet.GetRow(rowIndex).CreateCell(3).SetCellValue(od[row].SugarLevel);
+                sheet.GetRow(rowIndex).CreateCell(4).SetCellValue(od[row].IceLevel);
+                sheet.GetRow(rowIndex).CreateCell(5).SetCellValue(od[row].Price);
+                sheet.GetRow(rowIndex).CreateCell(6).SetCellValue(od[row].Quantity);
+                sheet.GetRow(rowIndex).CreateCell(7).SetCellValue(od[row].Memo);
+                rowIndex++;
+                orderer = od[row].Orderer;
+            }
+
+            var ms = new MemoryStream();
+            xssfworkbook.Write(ms);
+            byte[] bytesInStream = ms.ToArray();
+            ms.Close();
+            ms.Dispose();
+            return bytesInStream;
+        }
+        
     }
 }

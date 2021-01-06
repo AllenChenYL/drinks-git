@@ -169,22 +169,10 @@ var viewModel = kendo.observable({
         this.detailDataSource.remove(e.data);
     },
     exportClick: function(e) {
-        if(viewModel.viewDataSource.data().length > 0){
+        if (viewModel.viewDataSource.data().length > 0) {
             var orderId = viewModel.viewDataSource.data()[0].OrderId;
-            $.ajax({
-                url: "/Order/ExportToCsv",
-                contentType: "application/json; charset=utf-8",
-                type: "POST",
-                dataType: "json",
-                data: JSON.stringify({ "id": orderId })
-            }).done(function (response) {
-                if (!response.errors) {
-                    alert('匯出成功');
-                }
-                else {
-                    alert('匯出失敗');
-                }
-            });
+            var url = String.format("/Order/ExportToExcel?id={0}", orderId);
+            window.open(url);
         } else {
             alert('該飲料團無資料，請[返回團購列表]，[跟團]後再進行匯出');
         }

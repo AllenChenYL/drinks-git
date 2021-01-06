@@ -22,7 +22,10 @@ namespace Drinks.ViewModels
         
         [Display(Name = "冰量")]
         public string IceLevel { get; set; }
-        
+
+        [Display(Name = "價格")]
+        public int Price { get; set; }
+
         [Display(Name = "數量")]
         public int Quantity { get; set; }
         
