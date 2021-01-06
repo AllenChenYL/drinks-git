@@ -9,7 +9,12 @@ namespace Drinks.Models
     {
         public string Orderer { get; set; }
         public int TotalByOrderer { get{
-            return Orders.OrderDetails.Where(ood => ood.CreateId == CreateId).Sum(s => s.Price * s.Quantity);
+            if (Orders != null) {
+                return Orders.OrderDetails.Where(ood => ood.CreateId == CreateId).Sum(s => s.Price * s.Quantity);
+            }
+            else {
+                return 0;
+            }
         } }
     }
 }

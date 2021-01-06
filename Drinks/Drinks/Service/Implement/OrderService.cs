@@ -84,8 +84,12 @@ namespace Drinks.Service.Implement
 
         public Orders GetOrderById(int id)
         {
-            string userId = userDao.GetUserId(userName);
-            var order = GetOrders().Where(o => o.Id == id).Select(o => o).FirstOrDefault();
+            return GetOrders().Where(o => o.Id == id).Select(o => o).FirstOrDefault();
+        }
+
+        public Orders GetOrderByUserId(int id, string userId) 
+        {
+            var order = GetOrderById(id);
             order.OrderDetails = order.OrderDetails.Where(od => od.CreateId == userId).Select(od => od).ToList();
             return order;
         }

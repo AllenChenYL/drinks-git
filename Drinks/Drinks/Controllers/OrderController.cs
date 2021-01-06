@@ -89,7 +89,8 @@ namespace Drinks.Controllers
 
         public JsonResult GetOrderByUserId(int id)
         {
-            var order = orderService.GetOrderById(id);
+            string userId = userService.GetUserId(System.Web.HttpContext.Current.User.Identity.Name);
+            var order = orderService.GetOrderByUserId(id, userId);
             var result = Mapper.Map<OrdersVM>(order);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -137,7 +138,7 @@ namespace Drinks.Controllers
         private byte[] ConvertToExcel(List<OrderDetailsExportVM> od) 
         {
             XSSFWorkbook xssfworkbook = new XSSFWorkbook(); 
-            ISheet sheet = xssfworkbook.CreateSheet("sheet");
+            ISheet sheet = xssfworkbook.CreateSheet("訂購人名單");
 
             sheet.CreateRow(0).CreateCell(0).SetCellValue("訂購人");
             sheet.GetRow(0).CreateCell(1).SetCellValue("飲料名稱");
@@ -150,6 +151,7 @@ namespace Drinks.Controllers
 
             int rowIndex = 1;
             string orderer = string.Empty;
+            int totalByOrderer = 0;
             for (int row = 0; row < od.Count(); row++)
             {
                 sheet.CreateRow(rowIndex).CreateCell(0).SetCellValue(orderer == od[row].Orderer ? string.Empty : od[row].Orderer);
@@ -160,9 +162,16 @@ namespace Drinks.Controllers
                 sheet.GetRow(rowIndex).CreateCell(5).SetCellValue(od[row].Price);
                 sheet.GetRow(rowIndex).CreateCell(6).SetCellValue(od[row].Quantity);
                 sheet.GetRow(rowIndex).CreateCell(7).SetCellValue(od[row].Memo);
+                totalByOrderer += od[row].Price * od[row].Quantity;
+                if (rowIndex > 1 && orderer != od[row].Orderer)
+                {
+                    sheet.GetRow(rowIndex - 1).CreateCell(8).SetCellValue(String.Format("{0}元", totalByOrderer));
+                    totalByOrderer = 0;
+                }
                 rowIndex++;
                 orderer = od[row].Orderer;
             }
+            sheet.GetRow(rowIndex - 1).CreateCell(8).SetCellValue(String.Format("{0}元", totalByOrderer));
 
             var ms = new MemoryStream();
             xssfworkbook.Write(ms);
