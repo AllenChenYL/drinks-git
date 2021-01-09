@@ -31,9 +31,7 @@ namespace Drinks.Controllers
         // GET: Order
         public ActionResult Index()
         {
-            var stores = storeService.GetStores();
-            var result = Mapper.Map<List<StoresVM>>(stores);
-            return View(result);
+            return View();
         }
 
         [HttpPost]

@@ -250,9 +250,44 @@ $(function () {
         format: "yyyy/MM/dd HH:mm",
         min: new Date()
     });
+    GetStores();
 
     kendo.bind($(".body-content"), viewModel);
 });
+
+function GetStores()
+{
+    $.ajax({
+        url: "/Store/List",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        dataType: "json"
+    }).done(function (response) {
+        if (!response.errors) {
+            $("#store").empty();
+            var renderHtml = '';
+            $.each(response, function (index, item) {
+                renderHtml += '<div class="col-sm-4">';
+                renderHtml += '<div class="card">';
+                renderHtml += '<img class="card-img" src="' + item.DefaultImageId + '" alt=" avatar" style="width:100%">';
+                renderHtml += '<div class="container">';
+                renderHtml += '<h4><b>' + item.Name + '</b></h4>';
+                renderHtml += '<p>' + item.Address + '</p>';
+                renderHtml += '<p>' + item.Phone + '</p>';
+                renderHtml += '</div>';
+                renderHtml += '<input type="hidden" value=' + item.Id + ' />';
+                renderHtml += '<input class="btn btn-success" style="width: 100%; max-width: none" type="button" data-bind="click: openClick" value="開團┌(＞﹏＜)┘" />';
+                renderHtml += '</div>';
+                renderHtml += '</div>';
+            })
+            $("#store").append(renderHtml);
+            kendo.bind($(".body-content"), viewModel);
+        }
+        else {
+            alert('儲存失敗');
+        }
+    });
+}
 
 $(window).on('load', function () {
     var grid = $('#grid').data('kendoGrid');

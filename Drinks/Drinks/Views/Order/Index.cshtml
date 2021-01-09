@@ -1,6 +1,4 @@
-﻿@model IEnumerable<Drinks.ViewModels.StoresVM>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -38,24 +36,7 @@
 <hr/>
 <div data-bind="visible: storeVisible">
     <div class="btn btn-link" data-bind="click: backGroupClick">返回團購列表</div>
-    <div>
-        @{
-            foreach (var item in Model)
-            {
-                <div class="col-sm-4">
-                    <div class="card">
-                        <img class="card-img" src="@item.DefaultImageId" alt=" avatar" style="width:100%">
-                        <div class="container">
-                            <h4><b>@item.Name</b></h4>
-                            <p>@item.Address</p>
-                            <p>@item.Phone</p>
-                        </div>
-                        <input type="hidden" value="@item.Id" />
-                        <input class="btn btn-success" style="width: 100%; max-width: none" type="button" data-bind="click: openClick" value="開團┌(＞﹏＜)┘" />
-                    </div>
-                </div>
-            }
-        }
+    <div id="store">
     </div>
 </div>
 
