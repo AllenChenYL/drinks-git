@@ -22,7 +22,7 @@ __第三方套件__: Nuget AutoMapper
 ![This is a alt text.](https://github.com/Chen-Yi-Lun/drinks-git/blob/main/images/projectTree.JPG?raw=true "This is a sample image.")  
 
 1. App_Code: 放自己須要使用的Code。
-1. App_Start: 一些程式啟動時綁定的套件，**如: AutoMapper**。
+1. App_Start: 放一些程式啟動時需綁定的套件，**如: AutoMapper**。
 1. Contorllers: **Order和Store**為主要使用的Controller。
 1. Filters: 放用來驗證使用者是否登入的Code。
 1. Models: 放置資料表與產生class的地方，主要有**Store、Order與OrderDetail**。
@@ -93,7 +93,7 @@ __第三方套件__: Nuget AutoMapper
     grid.table.on('keydown', function (e)找到這一行開始 (目前為261行)。
 1. 發現每次瀏覽器Load頁面有夠慢。
     1. BroswerLink導致Load變慢，Web.config加入<add key="vs:EnableBrowserLink" value="false" />關起來。
-1. 因為檔案太大關係，所以省略整個專案將Packages及bin檔上傳至github，  
+1. 因為檔案太大關係，所以省略整個專案將Packages、bin及obj資料夾上傳至github，  
 但出現**Nuget基礎連結已關閉問題**，導致無法下載Packages套件。
     1. 工具->Nuget封裝管理員->套件管理員設定->套件來源->nuget.org  
     將https://www.nuget.org/api/v2/ 內改成http://www.nuget.org/api/v2/
@@ -114,10 +114,10 @@ Windows Registry Editor Version 5.00
     - [x] 將處理資料部分切成Service與Dao
     - [x] Service負責處理資料Dao負責撈資料，讓Controller只作為View與Model橋梁
 - [ ] [飲料團購]旁可以標示(number)目前未截止團數數量
-- [ ] 新增團購-> 卡片式畫面可以用Ajax撈取，當店家數多的時候，可以讓使用者選取部分店家
+- [x] 新增團購-> 卡片式畫面可以用Ajax撈取
    - [ ] 在Store資料表內加個欄位，把同屬性的店家套在一起讓畫面篩出，使用者快速選取。
 - [x] csv修改成匯出excel檔案
    - [ ] 加入店家資訊(店名、電話、地址)
 - [x] 新增價格欄位讓使用者自己填
     - [x] 試算每個欄位金額並總和
-- [ ] 待....
+- [ ] 待....  
