@@ -221,7 +221,9 @@ var viewModel = kendo.observable({
                 url: "/Order/List",
                 dataType: "json"
             }
-        }
+        },
+        pageSize: 8,
+        page: 1
     }),
     detailDataSource: new kendo.data.DataSource({
         batch: true,

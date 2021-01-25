@@ -98,6 +98,7 @@
 <div data-bind="visible: groupVisible">
     <div class="btn btn-link" data-bind="click: addClick">新增團購</div>
     <div data-role="grid"
+         data-pageable="true"
          data-bind="source: orderDataSource"
          data-columns="[
                         { field: '', title: ' ', template: kendo.template($('#gridEditTemplate').html()), width:'80px'},

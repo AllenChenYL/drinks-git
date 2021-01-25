@@ -105,7 +105,9 @@ var viewModel = kendo.observable({
                 url: "/Store/List",
                 dataType: "json"
             }
-        }
+        },
+        pageSize: 8,
+        page: 1
     }),
     model: new Model(),
 });

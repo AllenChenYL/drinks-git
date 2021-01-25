@@ -84,6 +84,7 @@
     <input type="button" name="Add" class="btn btn-link" data-bind="click: addClick" value="新增店家" />
     <hr />
     <div data-role="grid"
+         data-pageable="true"
          data-bind="source: storeDataSource"
          data-columns="[
                         { field: '', title: ' ', template: kendo.template($('#gridEditTemplate').html()), width:'140px'},
